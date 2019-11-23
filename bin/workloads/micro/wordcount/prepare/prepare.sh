@@ -40,6 +40,7 @@ if [  -z "$INPUT_FILE" ]
   else
     echo "one input file given"
     INPUT_HDFS=INPUT_HDFS".${INPUT_FILE##*.}"
+    echo $INPUT_HDFS
     hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}
     export INPUT_HDFS
 fi
