@@ -28,14 +28,14 @@ START_TIME=`timestamp`
 
 if [  -z "$1" ]
   then
-    hdfs dfs -put $1 ${INPUT_HDFS}
-  else
     run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
     -D mapreduce.randomtextwriter.totalbytes=${DATASIZE} \
     -D mapreduce.randomtextwriter.bytespermap=$(( ${DATASIZE} / ${NUM_MAPS} )) \
     -D mapreduce.job.maps=${NUM_MAPS} \
     -D mapreduce.job.reduces=${NUM_REDS} \
     ${INPUT_HDFS}
+  else
+    hdfs dfs -put $1 ${INPUT_HDFS}
 fi
 END_TIME=`timestamp`
 
