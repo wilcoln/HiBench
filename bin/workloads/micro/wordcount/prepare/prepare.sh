@@ -41,11 +41,9 @@ if [  -z "$INPUT_FILE" ]
     ${INPUT_HDFS}
   else
     echo "one input file given"
-
     hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}$EXTENSION
 fi
 END_TIME=`timestamp`
-
 show_bannar finish
 leave_bench
 

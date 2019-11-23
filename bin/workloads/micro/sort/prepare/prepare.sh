@@ -23,10 +23,13 @@ workload_config=${root_dir}/conf/workloads/micro/sort.conf
 enter_bench HadoopPrepareSort ${workload_config} ${current_dir}
 show_bannar start
 
-rmr_hdfs $INPUT_HDFS || true
+echo "nom du fichier : " $1
+INPUT_FILE=$1
+EXTENSION=".${INPUT_FILE##*.}"
+rmr_hdfs $INPUT_HDFS$EXTENSION || true
 START_TIME=`timestamp`
 
-INPUT_FILE=$1
+
 if [  -z "$INPUT_FILE" ]
   then
     echo "no input file given"
@@ -38,9 +41,7 @@ if [  -z "$INPUT_FILE" ]
       ${INPUT_HDFS}
     else
     echo "one input file given"
-    hdfs dfs -put $INPUT_FILE
-    INPUT_HDFS=$INPUT_FILE
-    export INPUT_HDFS
+    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}$EXTENSION
 fi
 END_TIME=`timestamp`
 show_bannar finish
