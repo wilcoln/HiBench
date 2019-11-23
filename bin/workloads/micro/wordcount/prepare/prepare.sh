@@ -23,11 +23,13 @@ workload_config=${root_dir}/conf/workloads/micro/wordcount.conf
 enter_bench HadoopPrepareWordcount ${workload_config} ${current_dir}
 show_bannar start
 
-rmr_hdfs $INPUT_HDFS || true
-START_TIME=`timestamp`
-
 echo "nom du fichier : " $1
 INPUT_FILE=$1
+EXTENSION=".${INPUT_FILE##*.}"
+rmr_hdfs $INPUT_HDFS$EXTENSION || true
+START_TIME=`timestamp`
+
+
 if [  -z "$INPUT_FILE" ]
   then
     echo "no input file given"
@@ -39,10 +41,8 @@ if [  -z "$INPUT_FILE" ]
     ${INPUT_HDFS}
   else
     echo "one input file given"
-    INPUT_HDFS=INPUT_HDFS".${INPUT_FILE##*.}"
-    echo $INPUT_HDFS
-    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}
-    export INPUT_HDFS
+
+    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}$EXTENSION
 fi
 END_TIME=`timestamp`
 
