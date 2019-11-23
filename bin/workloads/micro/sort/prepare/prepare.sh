@@ -39,7 +39,7 @@ if [  -z "$INPUT_FILE" ]
     else
     echo "one input file given"
     extension="${INPUT_FILE##*.}"
-    INPUT_HDFS=$INPUT_FILE"."$extension
+    INPUT_HDFS=$INPUT_HDFS"."$extension
     echo "input file in hdfs : " $INPUT_HDFS
     hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}
 fi
