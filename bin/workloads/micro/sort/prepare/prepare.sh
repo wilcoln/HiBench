@@ -27,7 +27,7 @@ rmr_hdfs $INPUT_HDFS || true
 START_TIME=`timestamp`
 
 INPUT_FILE=$1
-if [  -z $INPUT_FILE ]
+if [  -z "$INPUT_FILE" ]
   echo "no input file given"
   then
     run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \

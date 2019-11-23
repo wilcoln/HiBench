@@ -28,11 +28,11 @@ START_TIME=`timestamp`
 
 echo "nom du fichier : " $1
 INPUT_FILE=$1
-if [  -z $INPUT_FILE ]
+if [  -z "$INPUT_FILE" ]
   echo "no input file given"
   then
     run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
-    -D mapreduce.randomtextwriter.totalbytes=${DATASIZE} \
+    -D mapredulsce.randomtextwriter.totalbytes=${DATASIZE} \
     -D mapreduce.randomtextwriter.bytespermap=$(( ${DATASIZE} / ${NUM_MAPS} )) \
     -D mapreduce.job.maps=${NUM_MAPS} \
     -D mapreduce.job.reduces=${NUM_REDS} \
