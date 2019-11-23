@@ -40,7 +40,7 @@ if [  -z "$INPUT_FILE" ]
     echo "one input file given"
     extension="${INPUT_FILE##*.}"
     INPUT_HDFS=$INPUT_FILE"."$extension
-    echo $INPUT_HDFS
+    echo "input file in hdfs : " $INPUT_HDFS
     hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}
 fi
 END_TIME=`timestamp`
