@@ -27,6 +27,7 @@ rmr_hdfs $INPUT_HDFS || true
 START_TIME=`timestamp`
 
 if [  -z "$1" ]
+  echo "no input file given"
   then
     run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
     -D mapreduce.randomtextwriter.totalbytes=${DATASIZE} \
@@ -35,6 +36,7 @@ if [  -z "$1" ]
     -D mapreduce.job.reduces=${NUM_REDS} \
     ${INPUT_HDFS}
   else
+    echo "one input file given"
     hdfs dfs -put $1 ${INPUT_HDFS}
 fi
 END_TIME=`timestamp`
