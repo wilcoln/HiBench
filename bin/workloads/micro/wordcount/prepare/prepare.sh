@@ -39,8 +39,8 @@ if [  -z "$INPUT_FILE" ]
     ${INPUT_HDFS}
   else
     echo "one input file given"
-    hdfs dfs -put $INPUT_FILE
-    INPUT_HDFS=$INPUT_FILE
+    INPUT_HDFS=INPUT_HDFS".${INPUT_FILE##*.}"
+    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}
     export INPUT_HDFS
 fi
 END_TIME=`timestamp`
