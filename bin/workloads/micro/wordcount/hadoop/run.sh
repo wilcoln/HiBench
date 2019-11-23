@@ -27,6 +27,7 @@ rmr_hdfs $OUTPUT_HDFS || true
 
 SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
+echo ${HADOOP_EXAMPLES_JAR}
 run_hadoop_job ${HADOOP_EXAMPLES_JAR} wordcount \
     -D mapreduce.job.maps=${NUM_MAPS} \
     -D mapreduce.job.reduces=${NUM_REDS} \
