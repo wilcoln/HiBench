@@ -25,6 +25,7 @@ show_bannar start
 
 rmr_hdfs $INPUT_HDFS || true
 START_TIME=`timestamp`
+
 INPUT_FILE=$1
 if [  -z $INPUT_FILE ]
   echo "no input file given"
