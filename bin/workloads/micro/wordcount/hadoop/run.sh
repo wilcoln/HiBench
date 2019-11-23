@@ -23,20 +23,20 @@ workload_config=${root_dir}/conf/workloads/micro/wordcount.conf
 enter_bench HadoopWordcount ${workload_config} ${current_dir}
 show_bannar start
 
-rmr_hdfs $OUTPUT_HDFS || true
-
-SIZE=`dir_size $INPUT_HDFS`
-START_TIME=`timestamp`
 EXTENSION=$1
+START_TIME=`timestamp`
 if [  -z "$EXTENSION" ]
   then
-run_hadoop_job ${HADOOP_EXAMPLES_JAR} wordcount \
+    echo "nothing"
+  else
+  rmr_hdfs $OUTPUT_HDFS$EXTENSION || true
+
+  SIZE=`dir_size $INPUT_HDFS$EXTENSION`
+  run_hadoop_job ${HADOOP_EXAMPLES_JAR} wordcount \
     -D mapreduce.job.maps=${NUM_MAPS} \
     -D mapreduce.job.reduces=${NUM_REDS} \
     ${INPUT_HDFS}${EXTENSION} ${OUTPUT_HDFS}
   END_TIME=`timestamp`
-  else
-    echo "nothing"
 fi
 gen_report ${START_TIME} ${END_TIME} ${SIZE}
 show_bannar finish
