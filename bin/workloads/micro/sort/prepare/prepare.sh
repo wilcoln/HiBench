@@ -25,13 +25,20 @@ show_bannar start
 
 rmr_hdfs $INPUT_HDFS || true
 START_TIME=`timestamp`
-
-run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
-    -D mapreduce.randomtextwriter.totalbytes=${DATASIZE} \
-    -D mapreduce.randomtextwriter.bytespermap=$(( ${DATASIZE} / ${NUM_MAPS} )) \
-    -D mapreduce.job.maps=${NUM_MAPS} \
-    -D mapreduce.job.reduces=${NUM_REDS} \
-    ${INPUT_HDFS}
+INPUT_FILE=$1
+if [  -z $INPUT_FILE ]
+  echo "no input file given"
+  then
+    run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
+      -D mapreduce.randomtextwriter.totalbytes=${DATASIZE} \
+      -D mapreduce.randomtextwriter.bytespermap=$(( ${DATASIZE} / ${NUM_MAPS} )) \
+      -D mapreduce.job.maps=${NUM_MAPS} \
+      -D mapreduce.job.reduces=${NUM_REDS} \
+      ${INPUT_HDFS}
+    else
+    echo "one input file given"
+    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}
+fi
 END_TIME=`timestamp`
 show_bannar finish
 leave_bench
