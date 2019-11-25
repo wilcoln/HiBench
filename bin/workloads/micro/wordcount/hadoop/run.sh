@@ -24,19 +24,24 @@ enter_bench HadoopWordcount ${workload_config} ${current_dir}
 show_bannar start
 
 rmr_hdfs $OUTPUT_HDFS || true
-EXTENSION=$1
-START_TIME=`timestamp`
+EXTENSION=${1-}
 if [  -z "$EXTENSION" ]
   then
-    echo "nothing"
+    SIZE=`dir_size $INPUT_HDFS`
+    START_TIME=`timestamp`
+    run_hadoop_job ${HADOOP_EXAMPLES_JAR} wordcount \
+      -D mapreduce.job.maps=${NUM_MAPS} \
+      -D mapreduce.job.reduces=${NUM_REDS} \
+      ${INPUT_HDFS} ${OUTPUT_HDFS}
   else
-  SIZE=`dir_size $INPUT_HDFS$EXTENSION`
-  run_hadoop_job ${HADOOP_EXAMPLES_JAR} wordcount \
-    -D mapreduce.job.maps=${NUM_MAPS} \
-    -D mapreduce.job.reduces=${NUM_REDS} \
-    ${INPUT_HDFS}${EXTENSION} ${OUTPUT_HDFS}
-  END_TIME=`timestamp`
+    SIZE=`dir_size $INPUT_HDFS.$EXTENSION`
+    START_TIME=`timestamp`
+    run_hadoop_job ${HADOOP_EXAMPLES_JAR} wordcount \
+      -D mapreduce.job.maps=${NUM_MAPS} \
+      -D mapreduce.job.reduces=${NUM_REDS} \
+      ${INPUT_HDFS}.${EXTENSION} ${OUTPUT_HDFS}
 fi
+END_TIME=`timestamp`
 gen_report ${START_TIME} ${END_TIME} ${SIZE}
 show_bannar finish
 leave_bench

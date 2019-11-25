@@ -23,25 +23,25 @@ workload_config=${root_dir}/conf/workloads/micro/sort.conf
 enter_bench HadoopPrepareSort ${workload_config} ${current_dir}
 show_bannar start
 
-echo "nom du fichier : " $1
-INPUT_FILE=$1
-EXTENSION=".${INPUT_FILE##*.}"
-rmr_hdfs $INPUT_HDFS$EXTENSION || true
-START_TIME=`timestamp`
-
+INPUT_FILE=${1-}
 
 if [  -z "$INPUT_FILE" ]
   then
+    rmr_hdfs $INPUT_HDFS || true
+    START_TIME=`timestamp`
     echo "no input file given"
     run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
-      -D mapreduce.randomtextwriter.totalbytes=${DATASIZE} \
-      -D mapreduce.randomtextwriter.bytespermap=$(( ${DATASIZE} / ${NUM_MAPS} )) \
-      -D mapreduce.job.maps=${NUM_MAPS} \
-      -D mapreduce.job.reduces=${NUM_REDS} \
-      ${INPUT_HDFS}
-    else
-    echo "one input file given"
-    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}$EXTENSION
+    -D mapredulsce.randomtextwriter.totalbytes=${DATASIZE} \
+    -D mapreduce.randomtextwriter.bytespermap=$(( ${DATASIZE} / ${NUM_MAPS} )) \
+    -D mapreduce.job.maps=${NUM_MAPS} \
+    -D mapreduce.job.reduces=${NUM_REDS} \
+    ${INPUT_HDFS}
+  else
+    echo "Input file provided : " $INPUT_FILE
+    EXTENSION="${INPUT_FILE##*.}"
+    rmr_hdfs $INPUT_HDFS.$EXTENSION || true
+    START_TIME=`timestamp`
+    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}.$EXTENSION
 fi
 END_TIME=`timestamp`
 show_bannar finish

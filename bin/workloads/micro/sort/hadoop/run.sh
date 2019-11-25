@@ -25,15 +25,16 @@ show_bannar start
 
 rmr_hdfs $OUTPUT_HDFS || true
 
-EXTENSION=$1
-START_TIME=`timestamp`
+EXTENSION=${1-}
 if [  -z "$EXTENSION" ]
   then
-    echo "nothing"
-  else
-    SIZE=`dir_size $INPUT_HDFS$EXTENSION`
+    SIZE=`dir_size $INPUT_HDFS`
     START_TIME=`timestamp`
-    run_hadoop_job ${HADOOP_EXAMPLES_JAR} sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text -r ${NUM_REDS} ${INPUT_HDFS}$EXTENSION ${OUTPUT_HDFS}
+    run_hadoop_job ${HADOOP_EXAMPLES_JAR} sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text -r ${NUM_REDS} ${INPUT_HDFS} ${OUTPUT_HDFS}
+  else
+    SIZE=`dir_size $INPUT_HDFS.$EXTENSION`
+    START_TIME=`timestamp`
+    run_hadoop_job ${HADOOP_EXAMPLES_JAR} sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text -r ${NUM_REDS} ${INPUT_HDFS}.$EXTENSION ${OUTPUT_HDFS}
 fi
 END_TIME=`timestamp`
 gen_report ${START_TIME} ${END_TIME} ${SIZE}
