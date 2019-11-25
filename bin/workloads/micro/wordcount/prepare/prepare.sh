@@ -25,11 +25,12 @@ show_bannar start
 
 INPUT_FILE=${1-}
 
+rmr_hdfs $INPUT_HDFS* || true
+
 if [  -z "$INPUT_FILE" ]
   then
-    rmr_hdfs $INPUT_HDFS || true
+    echo "No input file provided"
     START_TIME=`timestamp`
-    echo "no input file given"
     run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
     -D mapredulsce.randomtextwriter.totalbytes=${DATASIZE} \
     -D mapreduce.randomtextwriter.bytespermap=$(( ${DATASIZE} / ${NUM_MAPS} )) \
@@ -39,7 +40,6 @@ if [  -z "$INPUT_FILE" ]
   else
     echo "Input file provided : " $INPUT_FILE
     EXTENSION=".${INPUT_FILE##*.}"
-    rmr_hdfs $INPUT_HDFS$EXTENSION || true
     START_TIME=`timestamp`
     hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}$EXTENSION
 fi
