@@ -23,13 +23,28 @@ workload_config=${root_dir}/conf/workloads/micro/terasort.conf
 enter_bench HadoopPrepareTerasort ${workload_config} ${current_dir}
 show_bannar start
 
-rmr_hdfs $INPUT_HDFS || true
-START_TIME=`timestamp`
-run_hadoop_job ${HADOOP_EXAMPLES_JAR} teragen \
+INPUT_FILE=${1-}
+
+rmr_hdfs $INPUT_HDFS* || true
+
+if [  -z "$INPUT_FILE" ]
+  then
+    echo "No input file provided"
+    START_TIME=`timestamp`
+    run_hadoop_job ${HADOOP_EXAMPLES_JAR} teragen \
     -D mapreduce.job.maps=${NUM_MAPS} \
     -D mapreduce.job.reduces=${NUM_REDS} \
     ${DATASIZE} ${INPUT_HDFS}
+  else
+    echo "Input file provided : " $INPUT_FILE
+    EXTENSION=".${INPUT_FILE##*.}"
+    START_TIME=`timestamp`
+    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}$EXTENSION
+    if [ "lzo" = "$EXTENSION" ]
+	then
+	hadoop jar /home/hadoop/hadoop-lzo/target/hadoop-lzo-0.4.21-SNAPSHOT.jar com.hadoop.compression.lzo.LzoIndexer ${INPUT_HDFS}$EXTENSION
+    fi
+fi
 END_TIME=`timestamp`
-
 show_bannar finish
 leave_bench
