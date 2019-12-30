@@ -42,6 +42,10 @@ if [  -z "$INPUT_FILE" ]
     EXTENSION=".${INPUT_FILE##*.}"
     START_TIME=`timestamp`
     hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}$EXTENSION
+    if [ "lzo" = "$EXTENSION" ]
+	then
+	hadoop jar /home/hadoop/hadoop-lzo/target/hadoop-lzo-0.4.21-SNAPSHOT.jar com.hadoop.compression.lzo.LzoIndexer ${INPUT_HDFS}$EXTENSION
+    fi
 fi
 END_TIME=`timestamp`
 show_bannar finish
