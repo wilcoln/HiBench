@@ -16,27 +16,38 @@
 
 current_dir=`dirname "$0"`
 current_dir=`cd "$current_dir"; pwd`
-root_dir=${current_dir}/../../../../../
-workload_config=${root_dir}/conf/workloads/micro/sort.conf
+root_dir=${current_dir}/../../../../..
+workload_config=${root_dir}/conf/workloads/micro/terasort.conf
 . "${root_dir}/bin/functions/load_bench_config.sh"
 
-enter_bench HadoopSort ${workload_config} ${current_dir}
+enter_bench HadoopPrepareTerasort ${workload_config} ${current_dir}
 show_bannar start
 
-rmr_hdfs $OUTPUT_HDFS || true
+INPUT_FILE=${1-}
 
-EXTENSION=${1-}
-if [  -z "$EXTENSION" ]
+rmr_hdfs $INPUT_HDFS* || true
+
+if [  -z "$INPUT_FILE" ]
   then
-    SIZE=`dir_size $INPUT_HDFS`
+    echo "No input file provided"
     START_TIME=`timestamp`
-    run_hadoop_job ${HADOOP_EXAMPLES_JAR} sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text -r ${NUM_REDS} ${INPUT_HDFS} ${OUTPUT_HDFS}
+    run_hadoop_job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
+    -D mapredulsce.randomtextwriter.totalbytes=${DATASIZE} \
+    -D mapreduce.randomtextwriter.bytespermap=$(( ${DATASIZE} / ${NUM_MAPS} )) \
+    -D mapreduce.job.maps=${NUM_MAPS} \
+    -D mapreduce.job.reduces=${NUM_REDS} \
+    ${INPUT_HDFS}
   else
-    SIZE=`dir_size $INPUT_HDFS.$EXTENSION`
+    echo "Input file provided : " $INPUT_FILE
+    EXTENSION=".${INPUT_FILE##*.}"
     START_TIME=`timestamp`
-    run_hadoop_job ${HADOOP_EXAMPLES_JAR} sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text -r ${NUM_REDS} ${INPUT_HDFS}.$EXTENSION ${OUTPUT_HDFS}
+    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}$EXTENSION
+    if [ "lzo" = "$EXTENSION" ]
+        then
+        hadoop jar /home/hadoop/hadoop-lzo/target/hadoop-lzo-0.4.21-SNAPSHOT.jar com.hadoop.compression.lzo.LzoIndexe$
+    fi
 fi
 END_TIME=`timestamp`
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+
 show_bannar finish
 leave_bench

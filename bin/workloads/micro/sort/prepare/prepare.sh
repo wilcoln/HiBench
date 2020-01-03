@@ -41,8 +41,8 @@ if [  -z "$INPUT_FILE" ]
     echo "Input file provided : " $INPUT_FILE
     EXTENSION="${INPUT_FILE##*.}"
     START_TIME=`timestamp`
-    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}.$EXTENSION.nsq
-    hadoop jar ~/hadoop-bench/ConvertTxtToSeq.jar ConvertTxtToSeq ${INPUT_HDFS}.$EXTENSION.nsq ${INPUT_HDFS}.$EXTENSION
+    hdfs dfs -put $INPUT_FILE ${INPUT_HDFS}.$EXTENSION
+   #  hadoop jar ~/hadoop-bench/ConvertTxtToSeq.jar ConvertTxtToSeq ${INPUT_HDFS}.$EXTENSION.nsq ${INPUT_HDFS}.$EXTENSION
 fi
 END_TIME=`timestamp`
 show_bannar finish
